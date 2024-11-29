@@ -36,11 +36,6 @@ jobs:
       - name: Display constitution.tex content
         run: cat constitution.tex
 
-      # LaTeXファイルをDVI形式にコンパイル
-      - name: Compile constitution.tex to DVI using platex
-        run: |
-          docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja platex /workdir/constitution.tex
-
       # LuaLaTeXでPDFを生成
       - name: Compile LaTeX to PDF using LuaLaTeX
         run: |
