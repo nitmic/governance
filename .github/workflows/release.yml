@@ -41,10 +41,10 @@ jobs:
         run: |
           docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja platex /workdir/constitution.tex
 
-      # DVIからPDFを生成
-      - name: Generate PDF from DVI using dvipdfmx
+      # LuaLaTeXでPDFを生成
+      - name: Compile LaTeX to PDF using LuaLaTeX
         run: |
-          docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja dvipdfmx /workdir/constitution.dvi
+          docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja lualatex -output-directory=/workdir /workdir/constitution.tex
 
       # Releaseの作成
       - name: Create Release
@@ -53,10 +53,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: "release-${{ github.sha }}-${{ github.run_id }}"
+          release_name: "$Release {{ env.CURRENT_DATETIME }}"
           body: |
-            Compiled PDF ${{ github.ref_name }}
+            Compiled PDF
           draft: false
           prerelease: false
 
