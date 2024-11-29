@@ -1,8 +1,9 @@
-\documentclass{ltjsarticle}
+\documentclass[fontspec]{jlreq} % LuaLaTeX専用
 \usepackage[top=25truemm, bottom=25truemm, left=20truemm, right=20truemm]{geometry}  % 余白設定
 \usepackage[utf8]{inputenc}  % UTF-8エンコーディングを使用
 \usepackage[japanese]{babel}  % 日本語のサポートを有効にする
-\usepackage{luatexja-preset} % 日本語サポートを有効化
+\usepackage{luatexja-fontspec}  % 日本語フォント指定用
+\setmainjfont{Noto Serif JP}    % 日本語フォントの指定
 
 % 目次やリストのレイアウト調整
 \def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}  % リストの間隔を調整
