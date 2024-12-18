@@ -1,0 +1,26 @@
+\documentclass{ltjsarticle}
+\usepackage[top=25truemm, bottom=25truemm, left=20truemm, right=20truemm]{geometry}  % 余白設定
+\usepackage[utf8]{inputenc}  % UTF-8エンコーディングを使用
+\usepackage[japanese]{babel}  % 日本語のサポートを有効にする
+\usepackage{luatexja-preset} % 日本語サポートを有効化
+
+% 目次やリストのレイアウト調整
+\def\tightlist{\itemsep1pt\parskip0pt\parsep0pt}  % リストの間隔を調整
+
+% タイトル設定
+\title{$title$}  % Markdownで定義されたタイトルを挿入
+
+% セクション設定（デフォルトの \section ではなく、指定された \section を使う）
+\renewcommand{\section}[1]{\vspace{10pt}\noindent \textbf{\large #1}}  % セクションの書式変更
+
+% サブセクション設定（デフォルトの \subsection を使用しない）
+\renewcommand{\subsection}[1]{\vspace{8pt}\noindent \textbf{#1}}  % サブセクションの書式変更
+
+\begin{document}
+
+\maketitle  % タイトルを出力
+
+% 本文部分
+$body$
+
+\end{document}
