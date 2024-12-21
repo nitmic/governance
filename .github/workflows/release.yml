@@ -1,0 +1,74 @@
+name: Convert Markdown to PDF and Create Release
+
+on:
+  workflow_dispatch:  # 手動実行を有効にする
+  push:
+    branches:
+      - feature/#6  # デバッグ用
+      
+jobs:
+  convert_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリをチェックアウト
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # pandocをインストール
+      - name: Install pandoc
+        run: sudo apt-get install pandoc
+
+      # Markdownファイルのタイトルを抽出
+      - name: Extract title from Markdown
+        id: extract_title
+        run: |
+          TITLE=$(head -n 1 constitution.md | sed 's/^# //')
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
+          echo "Extracted title: $TITLE"
+
+      # MarkdownからLaTeXファイルに変換
+      - name: Convert Markdown to LaTeX
+        run: |
+          pandoc -r markdown-auto_identifiers constitution.md -o constitution.tex --template=template.tex -V title="$TITLE"
+
+      # 生成されたLaTeXファイルを表示
+      - name: Display constitution.tex content
+        run: cat constitution.tex
+
+      # LuaLaTeXでPDFを生成
+      - name: Compile LaTeX to PDF using LuaLaTeX
+        run: |
+          docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja lualatex -output-directory=/workdir /workdir/constitution.tex
+
+      # 現在時刻を取得
+      - name: Set current datetime as env variable
+        env:
+          TZ: 'Asia/Tokyo' # タイムゾーン指定
+        run: echo "CURRENT_DATETIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        
+      # Releaseの作成
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "release-${{ github.sha }}-${{ github.run_id }}"
+          release_name: "Release ${{ env.CURRENT_DATETIME }}"
+          body: |
+            Compiled PDF
+          draft: false
+          prerelease: false
+
+      # 生成されたPDFをReleaseにアップロード
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./constitution.pdf
+          asset_name: constitution.pdf
+          asset_content_type: application/pdf
