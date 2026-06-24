@@ -25,7 +25,7 @@ jobs:
             pandoc/latex:latest \
             -c '
               tlmgr update --self &&
-              tlmgr install collection-langjapanese &&
+              tlmgr install collection-latexrecommended collection-langjapanese &&
               pandoc constitution.md \
                 --pdf-engine=lualatex \
                 --output constitution.pdf
