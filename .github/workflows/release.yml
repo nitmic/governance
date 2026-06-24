@@ -24,6 +24,7 @@ jobs:
             --entrypoint sh \
             pandoc/latex:latest \
             -c '
+              tlmgr update --self &&
               tlmgr install collection-langjapanese &&
               pandoc constitution.md \
                 --pdf-engine=lualatex \
